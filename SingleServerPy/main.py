@@ -1,24 +1,30 @@
 import numpy as np
 from scipy.stats import expon as exponential
 
-import random 
-import math
+
 Q_LIMIT=100
 BUSY=1
 IDLE=0
 
+#init some values
+mean_interarrival=0
+mean_service=0
+num_delays_required=0
+
+# an array of arrivaltime initialized to 0
+time_arrival=[0.0]*(Q_LIMIT+1)
+time_next_event=[0.0]*3
+
+# function to generate random values exponentially distributed
 def expon(mean):
     # return an expon random sample from the exponential distr
     return exponential(scale=mean).rvs()
 
-global next_event_type,num_cust_delayed,num_custs_delayed, num_delays_required, num_events,num_in_q, server_status,area_num_in_q, area_server_status, mean_interarrival, mean_service,sim_time,time_last_event,total_of_delays,infile,outfile
-
-time_arrival=[0.0]*(Q_LIMIT+1)
-time_next_event=[0.0]*3
-
-
 # initialize function 
 def init():
+    # global sim_time, server_status, num_in_q, time_last_event,num_cust_delayed, total_of_delays, area_num_in_q, area_server_status
+    global sim_time, server_status, num_in_q, time_last_event, num_cust_delayed, total_of_delays, area_num_in_q, area_server_status
+
     # initialze simulation clock
     sim_time=0.0
     server_status=IDLE
@@ -29,12 +35,12 @@ def init():
     total_of_delays=0.0
     area_num_in_q= 0.0
     area_server_status = 0.0
-    '''init event lit. SInce no customers are present, the departure(service completion ) event is eliminated from considerarion '''
+    '''init event list. Since no customers are present, the departure(service completion ) event is eliminated from considerarion '''
     time_next_event[1]=sim_time+expon(mean_interarrival)
     time_next_event[2]=1.0e+30
 
 def timing():
-    
+    global sim_time,next_event_type
     min_time_next_event=1.0e+29
     next_event_type=0
     #determine the event type of the next event to occur
@@ -51,9 +57,17 @@ def timing():
     sim_time=min_time_next_event
 
 def update_time_avg_stats():
-    pass
+    global time_last_event ,area_num_in_q,area_server_status
+    time_since_last_event=sim_time-time_last_event
+    time_last_event=sim_time
+
+    # update area under number-in-queue function
+    area_num_in_q+=num_in_q*time_since_last_event
+    # update area under server-busy indicator funcrion
+    area_server_status+=server_status*time_since_last_event
 
 def arrive():
+    global sim_time, num_in_q, server_status, num_cust_delayed, total_of_delays
     # schedule the next arriival
     time_next_event[1]=sim_time+expon(mean_interarrival)
     # check if server is busy
@@ -64,7 +78,7 @@ def arrive():
         if(num_in_q>Q_LIMIT):
             # queue has overflowed so stop the simulation
             outfile.write("\n Overflow of the array time arrival at \n")
-            outfile.write("\n time: {sim_time}")
+            outfile.write(f"\n time: {sim_time}")
             exit(2)
         # there is still room in the queue
         time_arrival[num_in_q]=sim_time
@@ -73,7 +87,7 @@ def arrive():
         delay=0.0
         total_of_delays+=delay
         # increase the no of cuts delayed and maje server busy
-        num_custs_delayed+=1
+        num_cust_delayed+=1
         server_status=BUSY
         # Schedule a departure service completion 
         time_next_event[2]=sim_time+expon(mean_service)
@@ -81,44 +95,50 @@ def arrive():
     
 
 def depart():
+    global sim_time, num_in_q, server_status, num_cust_delayed, total_of_delays
     # check if teh queue is empty
     if(num_in_q==0):
-        # make server IDLE an eliminate the departure(service completion) event from consideration
+        # make server IDLE and eliminate the departure(service completion) event from consideration
         server_status=IDLE
+        # make time of next departure inifinitely big
         time_next_event[2]=1.0e+30
     else:
         # the queue is non empty, so decrement the number of customers in the queue
-        num_in_q-+1
+        num_in_q-=1
         # compute delay of customer begining service
         delay =sim_time-time_arrival[1]
         total_of_delays+=delay
-        # incrrememnt no of customers delayed and schedule departure
-        num_custs_delayed+=1
+        # incrememnt no of customers delayed and schedule departure
+        num_cust_delayed+=1
         time_next_event[2]=sim_time+expon(mean_service)
         # move each customer if any up one place
         for i in range(1,num_in_q+1):
             time_arrival[i]=time_arrival[i+1]
 def report():
-    pass
+    global sim_time, total_of_delays, num_cust_delayed, area_num_in_q, area_server_status
+    # compute and write estimates of desired measures of performance
+    outfile.write(f"\n\n Average delay in queue {total_of_delays/num_cust_delayed}\n\n")
+    outfile.write(f"Average number in queue {area_num_in_q/sim_time}\n\n")
+    outfile.write(f"Server utilization: {area_server_status/sim_time}\n\n")
+    outfile.write(f"Time Simulation ended {sim_time} minutes")
 
 
 
 def main():
-    # open input and outputfile
-    global infile
+    global mean_interarrival,mean_service,num_delays_required,num_events
     with open("mm1.in ","r") as infile:
         # read
         input_string=infile.readline()
     global outfile
     outfile=open("mm2.out","w")
     # spectify the num of events for tehr timing function
-    num_of_events=2
+    num_events=2
     # read the inputs of the input file
     values=input_string.split()
     
-    mean_interarrival=values[0]
-    mean_service=values[1]
-    num_delays_required=values[2]
+    mean_interarrival=float(values[0])
+    mean_service=float(values[1])
+    num_delays_required=int(values[2])
 
     # write the report filr
     outfile.write("Single-server queueing system:\n\n")
@@ -139,8 +159,6 @@ def main():
             break
         elif next_event_type==2:
             depart()
-            break
-        else:
             break
     # invoke report Generator
     report()
