@@ -126,12 +126,12 @@ def report():
 
 def main():
     global mean_interarrival,mean_service,num_delays_required,num_events
-    with open("mm1.in ","r") as infile:
+    with open("mm1.in","r") as infile:
         # read
         input_string=infile.readline()
     global outfile
     outfile=open("mm2.out","w")
-    # spectify the num of events for tehr timing function
+    # spectify the num of events for the timing function
     num_events=2
     # read the inputs of the input file
     values=input_string.split()
@@ -156,10 +156,8 @@ def main():
         # invoke the appropriate event function 
         if next_event_type==1:
             arrive()
-            break
         elif next_event_type==2:
             depart()
-            break
     # invoke report Generator
     report()
     infile.close()

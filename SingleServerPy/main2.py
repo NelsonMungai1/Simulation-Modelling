@@ -89,7 +89,7 @@ def report():
 
 def main():
     global mean_interarrival, mean_service, num_delays_required, num_events
-    with open("mm1.in ", "r") as infile:
+    with open("./mm1.in", "r") as infile:
         input_string = infile.readline()
     global outfile
     outfile = open("mm2.out", "w")
