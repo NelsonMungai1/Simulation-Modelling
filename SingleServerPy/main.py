@@ -117,10 +117,10 @@ def depart():
 def report():
     global sim_time, total_of_delays, num_cust_delayed, area_num_in_q, area_server_status
     # compute and write estimates of desired measures of performance
-    outfile.write(f"\n\n Average delay in queue {total_of_delays/num_cust_delayed}\n\n")
-    outfile.write(f"Average number in queue {area_num_in_q/sim_time}\n\n")
-    outfile.write(f"Server utilization: {area_server_status/sim_time}\n\n")
-    outfile.write(f"Time Simulation ended {sim_time} minutes")
+    outfile.write(f"\n\n Average delay in queue {(total_of_delays/num_cust_delayed):.4f}\n\n")
+    outfile.write(f"Average number in queue {(area_num_in_q/sim_time):4f}\n\n")
+    outfile.write(f"Server utilization: {(area_server_status/sim_time):.4f}\n\n")
+    outfile.write(f"Time Simulation ended {(sim_time):.4f} minutes")
 
 
 
