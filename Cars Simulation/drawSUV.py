@@ -1,5 +1,6 @@
 import turtle
 car=turtle.Turtle()
+turtle.title("SUV")
 
 car.color("grey")
 car.fillcolor("black")
