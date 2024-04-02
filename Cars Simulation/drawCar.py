@@ -5,8 +5,10 @@ def generate_random_color():
     color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
     return color
 
+
 car = turtle.Turtle()
-car.speed(0)
+car.speed("fastest")#set maximum speed
+turtle.tracer(0,0)# disable animation
 car.screen.bgcolor("#fff")
 
 def draw_Car(i, j, rand_hex_color):
@@ -90,4 +92,6 @@ def draw_Car(i, j, rand_hex_color):
 
 rand_hex_color = generate_random_color()
 draw_Car(-200, 0, rand_hex_color)
+# update screen to display the final result
+turtle.update()
 turtle.done()

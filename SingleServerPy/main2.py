@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.stats import expon as exponential
-
+import random
+import math
 Q_LIMIT = 100
 BUSY = 1
 IDLE = 0
@@ -9,8 +10,12 @@ mean_interarrival = 0
 mean_service = 0
 num_delays_required = 0
 
+# def expon(mean):
+#     return exponential(scale=mean).rvs()
+
 def expon(mean):
-    return exponential(scale=mean).rvs()
+    # return -mean * math.log(random.random())
+    return -mean*(math.log(random.random()))
 
 time_arrival = [0.0] * (Q_LIMIT + 1)
 time_next_event = [0.0] * 3
@@ -82,10 +87,10 @@ def depart():
 
 def report():
     global sim_time, total_of_delays, num_cust_delayed, area_num_in_q, area_server_status
-    outfile.write(f"\n\n Average delay in queue, {total_of_delays / num_cust_delayed}\n\n")
-    outfile.write(f"Average number in queue, {area_num_in_q / sim_time}\n\n")
-    outfile.write(f"Server utilization:, {area_server_status / sim_time}\n\n")
-    outfile.write(f"Time Simulation ended, {sim_time}, minutes")
+    outfile.write(f"\n\n Average delay in queue: {(total_of_delays / num_cust_delayed):.3f}\n\n")
+    outfile.write(f"Average number in queue:{(area_num_in_q / sim_time):.3f}\n\n")
+    outfile.write(f"Server utilization: {(area_server_status / sim_time):.3f}\n\n")
+    outfile.write(f"Time Simulation ended: {(sim_time):.3f} minutes")
 
 def main():
     global mean_interarrival, mean_service, num_delays_required, num_events
