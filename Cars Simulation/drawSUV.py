@@ -1,5 +1,9 @@
 import turtle
 import random
+import flower
+import vehicles
+# SUV information
+suv = vehicles.SUV('Volvo', 2000, 30000, 18500.0, 5)
 
 def generate_random_color():
     color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
@@ -125,16 +129,49 @@ def draw_car(i, j, rand_hex_color, scale):
     # turtle.done()
     turtle.update()
 
-rand_hex_color=generate_random_color()
+
 # draw_car(-200,0,rand_hex_color)
 # scale=random.uniform(0.1,0.3)
 def main(): 
     turtle.title("SUV")
     turtle.tracer(0,0)#disable animation
+    rand_hex_color=generate_random_color()
+    scale=random.uniform(0.1,1)
+    print(scale)
+    flower.main()
+    draw_car(-200,-20,rand_hex_color,scale)
+    # SUV INFO DISPLAY 
+    boldfont=("Arial",15,"bold")
+    reg_font=("Times",12,"normal")
 
-    scale=random.uniform(0.1,1.5)
-    draw_car(-200,0,rand_hex_color,scale)
-
+    turtle.penup()
+    turtle.goto(-635,325)
+    turtle.right(90)
+    turtle.write("USED CAR INVENTORY",font=boldfont)
+    turtle.goto(-635,315)
+    turtle.write("*******************",font=boldfont)
+    turtle.goto(-635,305)
+    turtle.write("The following suv is in inventory",font=boldfont)
+    turtle.goto(-635,285)
+    turtle.write('Make:',font=boldfont)
+    turtle.goto(-550,285)
+    turtle.write(f"{suv.get_make()}",font=reg_font)
+    turtle.goto(-635,265)
+    turtle.write('Model:',font=boldfont)
+    turtle.goto(-550,265)
+    turtle.write(f'{suv.get_model()}',font=reg_font)
+    turtle.goto(-635,245)
+    turtle.write('Mileage:',font=boldfont)
+    turtle.goto(-550,245)
+    turtle.write(f'{suv.get_mileage()}',font=reg_font)
+    turtle.goto(-635,225)
+    turtle.write('Price:',font=boldfont)
+    turtle.goto(-550,225)
+    turtle.write(f'{suv.get_price()}',font=reg_font)
+    turtle.goto(-635,205)
+    turtle.write('Passenger Capacity:',font=boldfont)
+    turtle.goto(-465,205)
+    turtle.write(f'{suv.get_pass_cap()}',font=reg_font)
     turtle.update()
     turtle.done()
 

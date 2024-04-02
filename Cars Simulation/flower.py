@@ -97,16 +97,16 @@ def main():
     turtle.tracer(0,0)
 
     # Draw 7 flowers with reduced size
-    for i in range(7):
-        x = -200 + (i % 7) *50
-        y = -50
+    for i in range(10):
+        x = -200 + (i % 10) *50
+        y = -90
         scale =0.2
         print(scale)
         draw_flower(x, y, scale,generate_random_color())
     # update screen
         turtle.update()
     # Keep the window open
-    turtle.done()
+    # turtle.done()
 
 if __name__=="__main__":
     main()
