@@ -9,12 +9,12 @@ def generate_random_color():
     color = "#{:06x}".format(random.randint(0, 0xFFFFFF))
     return color
 
-car=turtle.Turtle()
-car.speed("fastest")
 
-turtle.title("truck")
-turtle.tracer(0,0)#disable animation
+
 def draw_lorry(i, j, rand_hex_color,scale):
+    car=turtle.Turtle()
+    car.speed("fastest")
+
     # Main body
     car.color("grey")
     car.fillcolor(rand_hex_color)
